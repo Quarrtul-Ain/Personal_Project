@@ -1,3 +1,3 @@
 # Personal_Project
 This is my first GitHub Repository<br>
-Author: Quarrtul Ain
+Author: Quarrtul Ain(chitral)
