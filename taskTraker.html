@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Task Tracker</title>
+  <style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #462255, #8d578c);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background-color: #D7BAB9;
+  padding: 30px;
+  border-radius: 12px;
+  width: 400px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.input-section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.input-section input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.input-section button {
+  padding: 10px 15px;
+  margin-left: 10px;
+  background-color: #ae18cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.input-section button:hover {
+  background-color: #813777;
+}
+
+ul {
+  list-style: none;
+}
+
+li {
+  background: #ecbb70;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li.completed {
+  text-decoration: line-through;
+  color: gray;
+}
+
+li button {
+  background: rgb(124, 9, 124);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.footer button {
+  padding: 10px 15px;
+  background-color: #31033a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1> DAILY GOALS</h1>
+    <div class="input-section">
+      <input type="text" id="taskInput" placeholder="Add your new task">
+      <button onclick="addTask()">Add</button>
+    </div>
+    <ul id="taskList"></ul>
+    <div class="footer">
+      <button onclick="clearTasks()">Clear All</button>
+    </div>
+  </div>
+  <script>
+    const taskInput = document.getElementById("taskInput");
+const taskList = document.getElementById("taskList");
+
+// Load saved tasks from localStorage
+window.onload = () => {
+  const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  savedTasks.forEach(task => createTaskElement(task.text, task.completed));
+};
+
+function addTask() {
+  const taskText = taskInput.value.trim();
+  if (taskText === "") {
+    alert("Please enter a task!");
+    return;
+  }
+  createTaskElement(taskText);
+  taskInput.value = "";
+  saveTasks();
+}
+
+function createTaskElement(text, completed = false) {
+  const li = document.createElement("li");
+  li.textContent = text;
+
+  if (completed) {
+    li.classList.add("completed");
+  }
+
+  li.addEventListener("click", () => {
+    li.classList.toggle("completed");
+    saveTasks();
+  });
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "Delete";
+  deleteBtn.onclick = function (e) {
+    e.stopPropagation();
+    li.remove();
+    saveTasks();
+  };
+
+  li.appendChild(deleteBtn);
+  taskList.appendChild(li);
+}
+
+function clearTasks() {
+  taskList.innerHTML = "";
+  saveTasks();
+}
+
+function saveTasks() {
+  const tasks = [];
+  taskList.querySelectorAll("li").forEach(li => {
+    tasks.push({
+      text: li.firstChild.textContent.trim(),
+      completed: li.classList.contains("completed")
+    });
+  });
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+  </script>
+</body>
+</html>
